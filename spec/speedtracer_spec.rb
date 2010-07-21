@@ -1,11 +1,11 @@
 require 'spec_helper'
 
-describe Rack::SpeedTracer do
+describe Rack::Bug::SpeedTracer do
   let(:app) { [200, {'Content-Type' => 'text/plain'}, 'Hello World'] }
 
   describe 'middleware' do
     it 'take a backend and returns a middleware component' do
-      Rack::SpeedTracer.new(app).should respond_to(:call)
+      Rack::Bug::SpeedTracer.new(app).should respond_to(:call)
     end
 
     it 'take an options Hash' do
@@ -42,6 +42,7 @@ describe Rack::SpeedTracer do
     end
 
     it 'should return 404 on missing trace' do
+      respond_with(404)
       response = get('/speedtracer?id=test-missing')
       response.status.should == 404
     end

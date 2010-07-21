@@ -1,13 +1,13 @@
 require 'spec_helper'
 
-describe Rack::SpeedTracer::Tracer do
+describe Rack::Bug::SpeedTrace::Tracer do
 
   it 'should accept unique id, method, uri on initialize' do
-    lambda { Rack::SpeedTracer::Tracer.new(1, 'GET', '/') }.should_not raise_error
+    lambda { Rack::Bug::SpeedTrace::Tracer.new(1, 'GET', '/') }.should_not raise_error
   end
 
   describe 'response' do
-    let(:tracer) { Rack::SpeedTracer::Tracer.new(1, 'GET', '/test') }
+    let(:tracer) { Rack::Bug::SpeedTrace::Tracer.new(1, 'GET', '/test') }
 
     it 'should serialize to json on finish' do
       lambda { Yajl::Parser.parse(tracer.finish) }.should_not raise_error
@@ -56,7 +56,7 @@ describe Rack::SpeedTracer::Tracer do
   end
 
   describe 'code tracing' do
-    let(:tracer) { Rack::SpeedTracer::Tracer.new(1, 'GET', '/test') }
+    let(:tracer) { Rack::Bug::SpeedTrace::Tracer.new(1, 'GET', '/test') }
 
     it 'should provide a mechanism to trace a code block' do
       lambda { tracer.run { sleep(0.01) }}.should_not raise_error

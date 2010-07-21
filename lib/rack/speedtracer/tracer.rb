@@ -1,6 +1,5 @@
-module Rack
-  module SpeedTracer
-
+module Rack::Bug
+  module SpeedTrace
     class TraceRecord
       def initialize(id)
         @id = id
@@ -11,14 +10,14 @@ module Rack
       def finish; @finish = Time.now; end
 
       private
-        # all timestamps in SpeedTracer are in milliseconds
-        def range(start, finish)
-          {
-            'duration'  =>  ((finish - start) * 1000).to_i,
-            'start'     =>  [start.to_i,  start.usec/1000].join(''),
-            'end'       =>  [finish.to_i, finish.usec/1000].join('')
-          }
-        end
+      # all timestamps in SpeedTracer are in milliseconds
+      def range(start, finish)
+        {
+          'duration'  =>  ((finish - start) * 1000).to_i,
+          'start'     =>  [start.to_i,  start.usec/1000].join(''),
+          'end'       =>  [finish.to_i, finish.usec/1000].join('')
+        }
+      end
     end
 
     class ServerEvent < TraceRecord
@@ -38,14 +37,14 @@ module Rack
           'range' => range(@start, @finish),
           'id' =>  @id,
           'operation' =>  {
-            'sourceCodeLocation' =>  {
-              'className'   =>  @file,
-              'methodName'  =>  @method,
-              'lineNumber'  =>  @line
-            },
-            'type' =>  'METHOD',
-            'label' =>  @name
-          },
+          'sourceCodeLocation' =>  {
+          'className'   =>  @file,
+          'methodName'  =>  @method,
+          'lineNumber'  =>  @line
+        },
+          'type' =>  'METHOD',
+          'label' =>  @name
+        },
           'children' =>  @children
         })
       end
@@ -101,20 +100,20 @@ module Rack
 
         Yajl::Encoder.encode({
           'trace' =>  {
-            'date' =>  @start.to_i,
-            'application' => 'Rack SpeedTracer',
-            'range' =>  range(@start, @finish),
-            'id' =>  @id,
-            'frameStack' =>  {
-              'range' =>  range(@start, @finish),
-              'id' =>  '0',
-              'operation' =>  {
-                'type' =>  'HTTP',
-                'label' =>  [@method, @uri].join(' ')
-              },
-              'children' =>  @children
-            }
-          }
+          'date' =>  @start.to_i,
+          'application' => 'Rack SpeedTracer',
+          'range' =>  range(@start, @finish),
+          'id' =>  @id,
+          'frameStack' =>  {
+          'range' =>  range(@start, @finish),
+          'id' =>  '0',
+          'operation' =>  {
+          'type' =>  'HTTP',
+          'label' =>  [@method, @uri].join(' ')
+        },
+          'children' =>  @children
+        }
+        }
         })
       end
     end

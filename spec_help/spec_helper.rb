@@ -27,7 +27,6 @@ def request(method, uri='/', opts={})
   opts = {
     'rack.run_once' => true,
     'rack.errors' => @errors,
-    'rack-bug.panels' => []
   }.merge(opts)
 
   @speedtracer ||= Rack::Bug::SpeedTracer.new(@app)
