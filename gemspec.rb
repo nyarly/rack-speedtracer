@@ -17,9 +17,10 @@ SPEC = Gem::Specification.new do |s|
      "VERSION",
      "examples/runner.png",
      "examples/runner.rb",
-     "lib/rack/speedtracer.rb",
-     "lib/rack/speedtracer/trace-app.rb",
-     "lib/rack/speedtracer/tracer.rb",
+     "lib/rack-bug-speedtracer.rb",
+     "lib/rack/bug/speedtracer.rb",
+     "lib/rack/bug/speedtracer/trace-app.rb",
+     "lib/rack/bug/speedtracer/tracer.rb",
      "spec/spec_helper.rb",
      "spec/speedtracer_spec.rb",
      "spec/tracer_spec.rb"
