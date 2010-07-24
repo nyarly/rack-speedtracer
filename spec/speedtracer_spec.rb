@@ -32,10 +32,12 @@ describe Rack::Bug::SpeedTracer do
 
     it 'should return a stored trace in JSON format' do
       sample_trace = Yajl::Encoder.encode({'trace' => {}})
+      tracer = mock(Rack::Bug::SpeedTrace::Tracer)
+      tracer.stub!(:to_json => sample_trace)
 
       respond_with(200)
       response = get('/speedtracer?id=test') do |st|
-        st.db['test'] = sample_trace
+        st.database['test'] = tracer
       end
 
       response.body.should == sample_trace

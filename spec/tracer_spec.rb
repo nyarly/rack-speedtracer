@@ -10,11 +10,11 @@ describe Rack::Bug::SpeedTrace::Tracer do
     let(:tracer) { Rack::Bug::SpeedTrace::Tracer.new(1, 'GET', '/test') }
 
     it 'should serialize to json on finish' do
-      lambda { Yajl::Parser.parse(tracer.finish) }.should_not raise_error
+      lambda { Yajl::Parser.parse(tracer.finish.to_json) }.should_not raise_error
     end
 
     it 'should conform to base speedtracer JSON schema' do
-      trace = Yajl::Parser.parse(tracer.finish)['trace']
+      trace = Yajl::Parser.parse(tracer.finish.to_json)['trace']
 
       # Example base trace:
       # {"date"=>1279403357,
@@ -27,10 +27,6 @@ describe Rack::Bug::SpeedTrace::Tracer do
       #    "operation"=>{"label"=>"GET /test", "type"=>"HTTP"},
       #    "children"=>[]}}
 
-      trace.should include 'date'
-      trace.should include 'application'
-      trace.should include 'id'
-
       trace.should include 'range'
       trace['range'].should be_an_instance_of Hash
 
@@ -39,8 +35,6 @@ describe Rack::Bug::SpeedTrace::Tracer do
 
       # root node description
       root = trace['frameStack']
-      root.should include 'id'
-      root['id'].to_i.should == 0
 
       root.should include 'range'
       root['range'].should be_an_instance_of Hash
@@ -56,45 +50,46 @@ describe Rack::Bug::SpeedTrace::Tracer do
   end
 
   describe 'code tracing' do
-    let(:tracer) { Rack::Bug::SpeedTrace::Tracer.new(1, 'GET', '/test') }
+    before :each do
+      @tracer = Rack::Bug::SpeedTrace::Tracer.new(1, 'GET', '/test')
+    end
 
     it 'should provide a mechanism to trace a code block' do
-      lambda { tracer.run { sleep(0.01) }}.should_not raise_error
+      lambda { @tracer.run { sleep(0.01) }}.should_not raise_error
     end
 
     it 'should measure execution time in milliseconds' do
-      tracer.run { sleep(0.01) }
-      trace = Yajl::Parser.parse(tracer.finish)['trace']
+      @tracer.run { sleep(0.01) }
+      trace = Yajl::Parser.parse(@tracer.finish.to_json)['trace']
 
       trace['range']['duration'].to_i.should == 10
     end
 
     it 'should report traced codeblocks' do
-      tracer.run { sleep(0.01) }
-      trace = Yajl::Parser.parse(tracer.finish)['trace']
+      @tracer.run { sleep(0.01) }
+      trace = Yajl::Parser.parse(@tracer.finish.to_json)['trace']
 
       trace['frameStack']['children'].size.should == 1
 
       child = trace['frameStack']['children'].first
-      child['id'].to_i.should == 1
       child.should include 'operation'
       child['operation'].should include 'label'
       child.should include 'children'
     end
 
     it 'should accept optional label for each trace' do
-      tracer.run('label') { sleep(0.01) }
-      trace = Yajl::Parser.parse(tracer.finish)['trace']
+      @tracer.run('label') { sleep(0.01) }
+      trace = Yajl::Parser.parse(@tracer.finish.to_json)['trace']
 
       trace['frameStack']['children'].first['operation']['label'].should match('label')
     end
 
     it 'should produce nested traces' do
-      tracer.run('parent') do
-        tracer.run('child') { sleep(0.01) }
+      @tracer.run('parent') do
+        @tracer.run('child') { sleep(0.01) }
       end
 
-      trace = Yajl::Parser.parse(tracer.finish)['trace']
+      trace = Yajl::Parser.parse(@tracer.finish.to_json)['trace']
 
       parent = trace['frameStack']['children'].first
       parent['operation']['label'].should match('parent')
@@ -102,7 +97,6 @@ describe Rack::Bug::SpeedTrace::Tracer do
 
       child = parent['children'].first
       child['operation']['label'].should match('child')
-      child['id'].to_i.should == 2
     end
   end
 end

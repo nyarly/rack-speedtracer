@@ -99,7 +99,7 @@ end
 namespace :package do
   RCov::VerifyTask.new do |t|
     t.require_exact_threshold = false
-    t.threshold = 85
+    t.threshold = 80
     t.verbose = true
   end
   task :verify_rcov => ['spec:doc']

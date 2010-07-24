@@ -1,7 +1,7 @@
 $LOAD_PATH.unshift File.dirname(File.dirname(__FILE__)) + '/lib'
 
 require 'rubygems'
-require 'rack/speedtracer'
+require 'rack/bug/speedtracer'
 require 'yajl'
 require 'spec'
 require 'pp'
@@ -24,9 +24,11 @@ def respond_with(status=200, headers={}, body=['Hello World'])
 end
 
 def request(method, uri='/', opts={})
+  @errors ||= []
   opts = {
     'rack.run_once' => true,
     'rack.errors' => @errors,
+    'rack-bug.panels' => []
   }.merge(opts)
 
   @speedtracer ||= Rack::Bug::SpeedTracer.new(@app)

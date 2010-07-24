@@ -34,7 +34,7 @@ module Rack::Bug
 
           qs = Rack::Utils.parse_query(env['QUERY_STRING'])
           if qs['id'] && @db[qs['id']]
-            resp.write @db[qs['id']]
+            resp.write @db[qs['id']].to_json
           else
             # Invalid request or missing request trace id
             return FourOhFour

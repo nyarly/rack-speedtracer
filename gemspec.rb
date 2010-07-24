@@ -17,12 +17,20 @@ SPEC = Gem::Specification.new do |s|
      "VERSION",
      "examples/runner.png",
      "examples/runner.rb",
-     "lib/rack-bug-speedtracer.rb",
      "lib/rack/bug/speedtracer.rb",
+     "lib/rack/bug/views/serverevent.html.erb",
+     "lib/rack/bug/views/traces.html.erb",
+     "lib/rack/bug/speedtracer/profiling.rb",
+     "lib/rack/bug/speedtracer/duck-puncher.rb",
+     "lib/rack/bug/speedtracer/default-rails-tracing.rb",
      "lib/rack/bug/speedtracer/trace-app.rb",
+     "lib/rack/bug/speedtracer/render.rb",
      "lib/rack/bug/speedtracer/tracer.rb",
-     "spec/spec_helper.rb",
+     "lib/rack-bug-speedtracer.rb",
+     "spec_help/spec_helper.rb",
      "spec/speedtracer_spec.rb",
+     "spec/profiling-speedtracer.rb",
+     "spec/duck-puncher.rb",
      "spec/tracer_spec.rb"
   ]
   s.homepage = %q{http://github.com/nyarly/rack-speedtracer}
