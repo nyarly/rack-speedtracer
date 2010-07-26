@@ -40,7 +40,6 @@ SPEC = Gem::Specification.new do |s|
   s.rubygems_version = %q{1.3.6}
   s.summary = %q{Rack::Bug Panel for server side information for Speed Tracer}
   s.test_files = [
-    "spec/spec_helper.rb",
      "spec/speedtracer_spec.rb",
      "spec/tracer_spec.rb",
      "examples/runner.rb"

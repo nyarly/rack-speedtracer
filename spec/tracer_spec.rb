@@ -9,6 +9,11 @@ describe Rack::Bug::SpeedTrace::Tracer do
   describe 'response' do
     let(:tracer) { Rack::Bug::SpeedTrace::Tracer.new(1, 'GET', '/test') }
 
+    it 'should produce decent HTML' do 
+      doc = tracer.finish.to_html
+      doc.should =~ /<div class="traceblock">\s*GET \/test/
+    end
+
     it 'should serialize to json on finish' do
       lambda { Yajl::Parser.parse(tracer.finish.to_json) }.should_not raise_error
     end

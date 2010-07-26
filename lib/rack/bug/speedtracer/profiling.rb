@@ -14,7 +14,7 @@ module Rack::Bug
         when "c-call", "call"
           methodname = classname ? "" : classname
           methodname += name.to_s
-          tracer.start_event("Call: " + methodname, file, line, methodname)
+          tracer.start_event(file, line, name, classname || "", "")
         when "c-return", "return"
           tracer.finish_event
         end

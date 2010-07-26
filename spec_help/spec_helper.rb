@@ -31,7 +31,7 @@ def request(method, uri='/', opts={})
     'rack-bug.panels' => []
   }.merge(opts)
 
-  @speedtracer ||= Rack::Bug::SpeedTracer.new(@app)
+  @speedtracer ||= self.class.described_class.new(@app)
   @request = Rack::MockRequest.new(@speedtracer)
 
   yield @speedtracer if block_given?
